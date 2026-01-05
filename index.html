@@ -106,6 +106,8 @@
             letter-spacing: 1px;
             text-transform: uppercase;
             white-space: nowrap;
+            cursor: pointer;
+            user-select: none;
         }
 
         .nav-links {
@@ -124,6 +126,7 @@
         .nav-item:hover { opacity: 0.6; }
         .nav-item input[type="checkbox"] { cursor: pointer; width: 17px; height: 17px; }
 
+        /* THEME TOGGLE KANAN KIRI */
         .theme-switch-box {
             display: flex; align-items: center; background: #e2e8f0; padding: 4px;
             border-radius: 50px; cursor: pointer; width: 70px; height: 34px;
@@ -131,7 +134,6 @@
         }
         body[data-theme="dark"] .theme-switch-box { background: #334155; }
         .switch-icons { display: flex; width: 100%; justify-content: space-around; align-items: center; z-index: 1; }
-        .switch-icons span { font-size: 18px; }
         .switch-knob {
             position: absolute; left: 4px; width: 26px; height: 26px;
             background: white; border-radius: 50%; transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
@@ -234,9 +236,9 @@
             .nav-logo { font-size: 16px; padding: 10px 5px; }
             .nav-links { gap: 15px; overflow-x: auto; padding-bottom: 5px; }
             .nav-item { font-size: 13px; }
-            .theme-switch-wrapper { width: 55px; height: 28px; }
-            .toggle-knob { width: 20px; height: 20px; }
-            body[data-theme="dark"] .toggle-knob { transform: translateX(27px); }
+            .theme-switch-box { width: 55px; height: 28px; }
+            .switch-knob { width: 20px; height: 20px; font-size: 12px; }
+            body[data-theme="dark"] .switch-knob { transform: translateX(27px); }
             
             .main-container { flex-direction: column; padding: 0 10px; align-items: center; margin-top: 10px; } 
             .wheel-section { width: 95vw; height: 95vw; margin-bottom: 20px; } 
@@ -260,9 +262,9 @@
                 <label for="hideArea" style="cursor:pointer">Hide Editor</label>
             </div>
             
-            <div class="theme-switch-wrapper" onclick="toggleTheme()">
-                <div class="toggle-img-icons"><span>☀️</span><span>🌙</span></div>
-                <div class="toggle-knob"></div>
+            <div class="theme-switch-box" onclick="toggleTheme()">
+                <div class="switch-icons"><span>☀️</span><span>🌙</span></div>
+                <div class="switch-knob" id="knobIcon">☀️</div>
             </div>
             <input type="number" id="spinDuration" value="10" style="display:none">
         </div>
@@ -331,7 +333,7 @@
             <div class="modal-header"><h3>Spin Settings</h3></div>
             <div class="modal-body">
                 <input type="range" id="timerSlider" min="1" max="60" value="10" oninput="document.getElementById('timerValue').innerText = this.value">
-                <div class="timer-display"><span id="timerValue">10</span> seconds</div>
+                <div style="font-size: 32px; font-weight: 700; margin: 25px 0; color: var(--primary-blue);"><span id="timerValue">10</span> seconds</div>
             </div>
             <div class="modal-footer">
                 <button class="btn-blue" style="background: #94a3b8;" onclick="document.getElementById('timerModal').style.display='none'">Cancel</button>
@@ -544,6 +546,13 @@
         function confirmGallerySelection() { if(!selectedGalleryUrl) return; const i=new Image(); i.crossOrigin="anonymous"; i.onload=()=>{ applyImageData(i,selectedGalleryUrl); closeModals(); }; i.src=selectedGalleryUrl; }
         function applyImageData(i,u) { if(activeTarget==='bg') wheelBg=i; else if(activeTarget==='center') centerLogo=i; else { namesInput.innerHTML += `<div><img src="${u}" class="list-img"></div>`; syncFromVisual(); } drawWheel(); }
         document.getElementById('fileInput').onchange=(e)=>{ const f=e.target.files[0]; if(!f) return; const r=new FileReader(); r.onload=(ev)=>{ const i=new Image(); i.onload=()=>{ applyImageData(i,ev.target.result); closeModals(); }; i.src=ev.target.result; }; r.readAsDataURL(f); };
+
+        // SHORTCUT CTRL + ENTER
+        window.addEventListener('keydown', (e) => {
+            if (e.ctrlKey && e.key === 'Enter') {
+                if (!spinning) handleSpinClick();
+            }
+        });
 
         syncFromVisual(); startIdleSpin();
     </script>
