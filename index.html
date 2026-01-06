@@ -126,7 +126,6 @@
         .nav-item:hover { opacity: 0.6; }
         .nav-item input[type="checkbox"] { cursor: pointer; width: 17px; height: 17px; }
 
-        /* THEME TOGGLE KANAN KIRI */
         .theme-switch-box {
             display: flex; align-items: center; background: #e2e8f0; padding: 4px;
             border-radius: 50px; cursor: pointer; width: 70px; height: 34px;
@@ -134,6 +133,7 @@
         }
         body[data-theme="dark"] .theme-switch-box { background: #334155; }
         .switch-icons { display: flex; width: 100%; justify-content: space-around; align-items: center; z-index: 1; }
+        .switch-icons span { font-size: 18px; }
         .switch-knob {
             position: absolute; left: 4px; width: 26px; height: 26px;
             background: white; border-radius: 50%; transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
@@ -237,7 +237,7 @@
             .nav-links { gap: 15px; overflow-x: auto; padding-bottom: 5px; }
             .nav-item { font-size: 13px; }
             .theme-switch-box { width: 55px; height: 28px; }
-            .switch-knob { width: 20px; height: 20px; font-size: 12px; }
+            .switch-knob { width: 20px; height: 20px; }
             body[data-theme="dark"] .switch-knob { transform: translateX(27px); }
             
             .main-container { flex-direction: column; padding: 0 10px; align-items: center; margin-top: 10px; } 
@@ -526,10 +526,16 @@
         function switchTab(t) { const isE = t === 'entries'; namesInput.style.display = isE ? 'block' : 'none'; document.getElementById('entriesButtons').style.display = isE ? 'block' : 'none'; resultsList.style.display = isE ? 'none' : 'block'; document.getElementById('resultsButtons').style.display = isE ? 'none' : 'block'; document.getElementById('tabEntries').className = isE ? 'tab-item active' : 'tab-item'; document.getElementById('tabResults').className = isE ? 'tab-item' : 'tab-item active'; }
         function closeModals() { document.getElementById('modalType').style.display='none'; document.getElementById('modalSource').style.display='none'; }
         
+        // --- PERBAIKAN RESET TOTAL ---
         function createNewWheel() { 
-            if(spinning) return; namesInput.innerHTML = "Akbar<br>Budi<br>Sarah<br>Dinda"; resultsArr = []; updateResultsUI(); 
+            if(spinning) return; 
+            namesInput.innerHTML = "Akbar<br>Budi<br>Sarah<br>Dinda"; 
+            resultsArr = []; 
+            updateResultsUI(); 
             wheelBg = null; centerLogo = null; riggedName = null;
-            document.getElementById('wheelTitleText').innerText = "Wheel of Names"; document.getElementById('wheelDescText').innerText = "Spin the wheel to pick a name!";
+            document.getElementById('riggedInput').value = ""; // RESET INPUT RAHASIA
+            document.getElementById('wheelTitleText').innerText = "Wheel of Names"; 
+            document.getElementById('wheelDescText').innerText = "Spin the wheel to pick a name!";
             syncFromVisual(); 
         }
 
@@ -547,7 +553,6 @@
         function applyImageData(i,u) { if(activeTarget==='bg') wheelBg=i; else if(activeTarget==='center') centerLogo=i; else { namesInput.innerHTML += `<div><img src="${u}" class="list-img"></div>`; syncFromVisual(); } drawWheel(); }
         document.getElementById('fileInput').onchange=(e)=>{ const f=e.target.files[0]; if(!f) return; const r=new FileReader(); r.onload=(ev)=>{ const i=new Image(); i.onload=()=>{ applyImageData(i,ev.target.result); closeModals(); }; i.src=ev.target.result; }; r.readAsDataURL(f); };
 
-        // SHORTCUT CTRL + ENTER
         window.addEventListener('keydown', (e) => {
             if (e.ctrlKey && e.key === 'Enter') {
                 if (!spinning) handleSpinClick();
